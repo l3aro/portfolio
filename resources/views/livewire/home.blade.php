@@ -15,6 +15,37 @@ new class extends Component {
             ->take(3)
             ->get();
     }
+
+    #[Computed]
+    public function positions()
+    {
+        return [
+            [
+                'company' => 'Planetaria',
+                'title' => 'CEO',
+                'start' => '2019',
+                'end' => 'Present',
+            ],
+            [
+                'company' => 'Airbnb',
+                'title' => 'Product Designer',
+                'start' => '2014',
+                'end' => '2019',
+            ],
+            [
+                'company' => 'Facebook',
+                'title' => 'iOS Software Engineer',
+                'start' => '2011',
+                'end' => '2014',
+            ],
+            [
+                'company' => 'Starbucks',
+                'title' => 'Shift Supervisor',
+                'start' => '2008',
+                'end' => '2011',
+            ],
+        ];
+    }
 }; ?>
 
 <div class="mt-9 w-full">
@@ -41,6 +72,24 @@ new class extends Component {
                     @foreach ($this->articles as $article)
                         <x-home.article :$article />
                     @endforeach
+                </div>
+                <div class="space-y-10 lg:pl-16 xl:pl-24">
+                    <div class="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
+                        <h2 class="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                            <flux:icon name="briefcase" class="size-6 flex-none" />
+                            <span class="ml-3">Work</span>
+                        </h2>
+                        <ol class="mt-6 space-y-4">
+                            @foreach ($this->positions as $position)
+                                <x-home.position :$position />
+                            @endforeach
+                        </ol>
+
+                        <flux:button class="mt-6 w-full transition cursor-pointer" variant="filled">
+                            Download CV
+                            <flux:icon name="arrow-down" class="size-4" />
+                        </flux:button>
+                    </div>
                 </div>
             </div>
         </div>
