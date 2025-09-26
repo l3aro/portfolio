@@ -4,15 +4,16 @@
     "printWidth": 120,
     "tabWidth": 4,
     "plugins": [
-        "prettier-plugin-blade"
+        "@shufo/prettier-plugin-blade"
     ],
     "overrides": [
         {
             "files": [
-                "*.php"
+                "*.blade.php"
             ],
             "options": {
-                "parser": "blade"
+                "parser": "blade",
+                "tabWidth": 4
             }
         }
     ]
