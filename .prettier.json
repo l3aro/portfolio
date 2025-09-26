@@ -1,0 +1,19 @@
+{
+    "singleQuote": true,
+    "trailingComma": "all",
+    "printWidth": 120,
+    "tabWidth": 4,
+    "plugins": [
+        "prettier-plugin-blade"
+    ],
+    "overrides": [
+        {
+            "files": [
+                "*.php"
+            ],
+            "options": {
+                "parser": "blade"
+            }
+        }
+    ]
+}
