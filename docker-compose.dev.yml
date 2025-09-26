@@ -84,39 +84,6 @@ services:
       - app
     restart: unless-stopped
 
-  minio:
-    image: minio/minio:latest
-    command: minio server /data --console-address ":9001"
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
-    volumes:
-      - minio_data:/data
-    networks:
-      - app
-      - proxy
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=proxy
-
-      # API service
-      - traefik.http.routers.${STACK_NAME}-minio-api.entrypoints=web
-      - traefik.http.routers.${STACK_NAME}-minio-api.rule=Host(`${AWS_DOMAIN}`)
-      - traefik.http.routers.${STACK_NAME}-minio-api.service=${STACK_NAME}-minio-api
-      - traefik.http.services.${STACK_NAME}-minio-api.loadbalancer.server.port=9000
-
-      # UI service
-      - traefik.http.routers.${STACK_NAME}-minio-ui.entrypoints=web
-      - traefik.http.routers.${STACK_NAME}-minio-ui.rule=Host(`minio-ui.${APP_DOMAIN}`)
-      - traefik.http.routers.${STACK_NAME}-minio-ui.service=${STACK_NAME}-minio-ui
-      - traefik.http.services.${STACK_NAME}-minio-ui.loadbalancer.server.port=9001
-    healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
-    restart: unless-stopped
-
   postgres_test:
     image: timescale/timescaledb:2.20.3-pg17
     restart: unless-stopped
@@ -137,4 +104,3 @@ volumes:
   web_ssh:
   postgres_data:
   redis_data:
-  minio_data:
