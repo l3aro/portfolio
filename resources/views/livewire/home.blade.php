@@ -59,11 +59,12 @@ new class extends Component {
             Planetaria, where we develop technologies that empower regular people to explore space on their own terms.
         </div>
         <div class="mt-6 flex gap-6">
-            <flux:button href="https://github.com/l3aro" icon="github" target="blank"></flux:button>
+            <flux:button href="https://github.com/l3aro" icon="github" target="blank" variant="ghost"></flux:button>
             <flux:button
                 href="https://www.linkedin.com/in/bao-duong-924717186/"
                 icon="linkedin"
                 target="blank"
+                variant="ghost"
             ></flux:button>
         </div>
         <div class="mt-24 md:mt-28">
