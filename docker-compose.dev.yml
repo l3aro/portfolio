@@ -1,0 +1,140 @@
+services:
+  web:
+    image: ${REG_URL}/${PROJECT_NAME}:${TAG}
+    working_dir: /var/www/html
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/up" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${STACK_NAME}-web.rule=Host(`${APP_DOMAIN}`)
+      - traefik.http.routers.${STACK_NAME}-web.entrypoints=web
+      - traefik.docker.network=proxy
+      - traefik.http.services.${STACK_NAME}-web.loadbalancer.server.port=8080
+    ports:
+      - ${VITE_PORT:-5173}:${VITE_PORT:-5173}
+    volumes:
+      - .:/var/www/html
+      - web_ssh:/home/www-data/.ssh
+    networks:
+      - app
+      - proxy
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  postgres:
+    image: timescale/timescaledb:2.20.3-pg17
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - app
+    restart: unless-stopped
+    ports:
+      - ${DB_PORT_PUBLIC:-5432}:5432
+
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    environment:
+      ADMINER_DESIGN: "dracula"
+      ADMINER_DEFAULT_SERVER: ${DB_HOST}
+      ADMINER_DEFAULT_DRIVER: ${DB_CONNECTION}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${STACK_NAME}-adminer.rule=Host(`adminer.${APP_DOMAIN}`)
+      - traefik.http.routers.${STACK_NAME}-adminer.entrypoints=web
+      - traefik.docker.network=proxy
+      - traefik.http.services.${STACK_NAME}-adminer.loadbalancer.server.port=8080
+    networks:
+      - app
+      - proxy
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis_data:/data
+    networks:
+      - app
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    command: minio server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - minio_data:/data
+    networks:
+      - app
+      - proxy
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+
+      # API service
+      - traefik.http.routers.${STACK_NAME}-minio-api.entrypoints=web
+      - traefik.http.routers.${STACK_NAME}-minio-api.rule=Host(`${AWS_DOMAIN}`)
+      - traefik.http.routers.${STACK_NAME}-minio-api.service=${STACK_NAME}-minio-api
+      - traefik.http.services.${STACK_NAME}-minio-api.loadbalancer.server.port=9000
+
+      # UI service
+      - traefik.http.routers.${STACK_NAME}-minio-ui.entrypoints=web
+      - traefik.http.routers.${STACK_NAME}-minio-ui.rule=Host(`minio-ui.${APP_DOMAIN}`)
+      - traefik.http.routers.${STACK_NAME}-minio-ui.service=${STACK_NAME}-minio-ui
+      - traefik.http.services.${STACK_NAME}-minio-ui.loadbalancer.server.port=9001
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    restart: unless-stopped
+
+  postgres_test:
+    image: timescale/timescaledb:2.20.3-pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge
+  proxy:
+    external: true
+
+volumes:
+  web_ssh:
+  postgres_data:
+  redis_data:
+  minio_data:
