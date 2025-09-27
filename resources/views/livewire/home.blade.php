@@ -12,6 +12,7 @@ new class extends Component {
             ->withWhereHas('url')
             ->whereNotNull('published_at')
             ->latest('published_at')
+            ->select(['id', 'title', 'description', 'published_at'])
             ->take(3)
             ->get();
     }

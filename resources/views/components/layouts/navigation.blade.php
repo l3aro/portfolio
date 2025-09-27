@@ -3,10 +3,17 @@
     <flux:brand href="#" :logo="asset('images/avatar.jpg')" class="max-lg:hidden" />
     <flux:spacer />
     <flux:navbar class="-mb-px max-lg:hidden">
-        <flux:navbar.item icon="home" :href="route('home')" :current="request()->routeIs('home')">
+        <flux:navbar.item icon="home" :href="route('home')" :current="request()->routeIs('home')" wire:navigate>
             Home
         </flux:navbar.item>
-        <flux:navbar.item icon="inbox" :href="route('about')">About</flux:navbar.item>
+        <flux:navbar.item
+            icon="document-text"
+            :href="route('articles')"
+            :current="request()->routeIs('articles*')"
+            wire:navigate
+        >
+            Articles
+        </flux:navbar.item>
     </flux:navbar>
     <flux:spacer />
     <flux:navbar class="me-4">
@@ -48,9 +55,16 @@
         />
     </flux:sidebar.header>
     <flux:sidebar.nav>
-        <flux:sidebar.item icon="home" :href="route('home')" :current="request()->routeIs('home')">
+        <flux:sidebar.item icon="home" :href="route('home')" :current="request()->routeIs('home')" wire:navigate>
             Home
         </flux:sidebar.item>
-        <flux:sidebar.item icon="document-text" href="#">Documents</flux:sidebar.item>
+        <flux:sidebar.item
+            icon="document-text"
+            :href="route('articles')"
+            :current="request()->routeIs('articles*')"
+            wire:navigate
+        >
+            Documents
+        </flux:sidebar.item>
     </flux:sidebar.nav>
 </flux:sidebar>
