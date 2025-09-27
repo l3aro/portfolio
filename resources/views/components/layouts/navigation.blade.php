@@ -8,7 +8,7 @@
         </flux:navbar.item>
         <flux:navbar.item
             icon="document-text"
-            :href="route('articles')"
+            :href="route('articles.index')"
             :current="request()->routeIs('articles*')"
             wire:navigate
         >
@@ -60,11 +60,11 @@
         </flux:sidebar.item>
         <flux:sidebar.item
             icon="document-text"
-            :href="route('articles')"
+            :href="route('articles.index')"
             :current="request()->routeIs('articles*')"
             wire:navigate
         >
-            Documents
+            Articles
         </flux:sidebar.item>
     </flux:sidebar.nav>
 </flux:sidebar>

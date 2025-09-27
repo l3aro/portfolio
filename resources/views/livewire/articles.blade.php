@@ -17,11 +17,20 @@ new class extends Component {
             ->latest('published_at')
             ->simplePaginate(5);
     }
+
+    #[Computed]
+    public function breadcrumbs()
+    {
+        return [
+            'Articles' => route('articles.index'),
+        ];
+    }
 }; ?>
 
 <x-layouts.page
     title="Writing on software design, company building, and the aerospace industry."
     intro="All of my long-form thoughts on programming, leadership, product design, and more, collected in chronological order."
+    breadcrumb="Articles"
 >
     <div class="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
         <div class="flex max-w-3xl flex-col space-y-16">

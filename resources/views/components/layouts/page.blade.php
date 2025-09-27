@@ -1,11 +1,20 @@
 @props([
     'title',
     'intro',
+    'breadcrumb' => null,
 ])
 
-<div class="mt-16 sm:mt-32">
-    <header class="max-w-3xl">
-        <h1 class="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
+<div class="mx-auto max-w-3xl">
+    <header>
+        <flux:breadcrumbs>
+            <flux:breadcrumbs.item :href="route('home')" icon="home" wire:navigate />
+            @isset($breadcrumb)
+                <flux:breadcrumbs.item>
+                    {{ $breadcrumb }}
+                </flux:breadcrumbs.item>
+            @endisset
+        </flux:breadcrumbs>
+        <h1 class="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100 mt-8 sm:mt-16">
             {{ $title }}
         </h1>
         <p class="mt-6 text-base text-zinc-600 dark:text-zinc-400">
