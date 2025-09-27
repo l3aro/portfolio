@@ -19,7 +19,7 @@ services:
       - ${VITE_PORT:-5173}:${VITE_PORT:-5173}
     volumes:
       - .:/var/www/html
-      - web_ssh:/home/www-data/.ssh
+      - web_ssh:/var/www/.ssh
     networks:
       - app
       - proxy

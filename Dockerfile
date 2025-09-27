@@ -1,27 +1,29 @@
 FROM ghcr.io/l3aro/docker-laravel-base:main AS base
 
+WORKDIR /var/www/html
+
 FROM base AS dev
 
 USER root
 
-RUN apk add --no-cache \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
     tmux \
     git \
     vim \
     screen \
-    openssh \
-    lazygit
+    openssh-client \
+    lazygit && \
+    rm -rf /var/lib/apt/lists/*
 
 USER www-data
 
-RUN cp /package/custom/config/.tmux.conf /home/www-data/.tmux.conf
-RUN cp /package/custom/config/.vimrc /home/www-data/.vimrc
-RUN chown www-data:www-data /home/www-data/.tmux.conf
-RUN chown www-data:www-data /home/www-data/.vimrc
+RUN cp /package/custom/config/.tmux.conf /var/www/.tmux.conf
+RUN cp /package/custom/config/.vimrc /var/www/.vimrc
+RUN chown www-data:www-data /var/www/.tmux.conf
+RUN chown www-data:www-data /var/www/.vimrc
 
 FROM base AS prod
-
-WORKDIR /var/www/html
 
 USER root
 
