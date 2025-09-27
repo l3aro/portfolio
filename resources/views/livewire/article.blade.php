@@ -2,8 +2,11 @@
 
 use App\Models\Article;
 use Livewire\Volt\Component;
+use App\Livewire\Concerns\WithSeo;
 
 new class extends Component {
+    use WithSeo;
+
     public Article $article;
 
     public function mount(string $slug)
@@ -14,6 +17,12 @@ new class extends Component {
                     ->where('urlable_type', new Article()->getMorphClass());
             })
             ->firstOrFail();
+
+        $this->seo(
+            relativeTitle: $this->article->title,
+            description: $this->article->description,
+            keywords: $this->article->tags->pluck('name')->toArray(),
+        );
     }
 }; ?>
 

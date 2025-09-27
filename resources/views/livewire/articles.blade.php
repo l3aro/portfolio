@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Concerns\WithSeo;
 use App\Models\Article;
 use Livewire\Attributes\Computed;
 use Livewire\Volt\Component;
@@ -7,6 +8,7 @@ use Livewire\WithPagination;
 
 new class extends Component {
     use WithPagination;
+    use WithSeo;
 
     #[Computed]
     public function articles()
@@ -24,6 +26,11 @@ new class extends Component {
         return [
             'Articles' => route('articles.index'),
         ];
+    }
+
+    public function mount()
+    {
+        $this->seo(relativeTitle: 'Articles');
     }
 }; ?>
 

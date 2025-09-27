@@ -3,8 +3,11 @@
 use App\Models\Article;
 use Livewire\Attributes\Computed;
 use Livewire\Volt\Component;
+use App\Livewire\Concerns\WithSeo;
 
 new class extends Component {
+    use WithSeo;
+
     #[Computed]
     public function articles()
     {
@@ -46,6 +49,11 @@ new class extends Component {
                 'end' => '2011',
             ],
         ];
+    }
+
+    public function mount()
+    {
+        $this->seo(relativeTitle: 'Home');
     }
 }; ?>
 
