@@ -6,14 +6,17 @@
         <flux:navbar.item icon="home" :href="route('home')" :current="request()->routeIs('home')" wire:navigate>
             Home
         </flux:navbar.item>
-        <flux:navbar.item
-            icon="document-text"
-            :href="route('articles.index')"
-            :current="request()->routeIs('articles*')"
-            wire:navigate
-        >
-            Articles
-        </flux:navbar.item>
+        @if (app(\App\Settings\ArticleSetting::class)->enabled)
+            <flux:navbar.item
+                icon="document-text"
+                :href="route('articles.index')"
+                :current="request()->routeIs('articles*')"
+                wire:navigate
+            >
+                Articles
+            </flux:navbar.item>
+        @endif
+
         @if (app(\App\Settings\TechRecommendation::class)->enabled)
             <flux:navbar.item
                 icon="wrench-screwdriver"
@@ -68,14 +71,17 @@
         <flux:sidebar.item icon="home" :href="route('home')" :current="request()->routeIs('home')" wire:navigate>
             Home
         </flux:sidebar.item>
-        <flux:sidebar.item
-            icon="document-text"
-            :href="route('articles.index')"
-            :current="request()->routeIs('articles*')"
-            wire:navigate
-        >
-            Articles
-        </flux:sidebar.item>
+        @if (app(\App\Settings\ArticleSetting::class)->enabled)
+            <flux:sidebar.item
+                icon="document-text"
+                :href="route('articles.index')"
+                :current="request()->routeIs('articles*')"
+                wire:navigate
+            >
+                Articles
+            </flux:sidebar.item>
+        @endif
+
         @if (app(\App\Settings\TechRecommendation::class)->enabled)
             <flux:sidebar.item
                 icon="wrench-screwdriver"

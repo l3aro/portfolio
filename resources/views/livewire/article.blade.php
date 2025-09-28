@@ -3,6 +3,7 @@
 use App\Models\Article;
 use Livewire\Volt\Component;
 use App\Livewire\Concerns\WithSeo;
+use App\Settings\ArticleSetting;
 
 new class extends Component {
     use WithSeo;
@@ -11,6 +12,10 @@ new class extends Component {
 
     public function mount(string $slug)
     {
+        if (! app(ArticleSetting::class)->enabled) {
+            abort(404);
+        }
+
         $this->article = Article::query()
             ->whereHas('url', function ($query) use ($slug) {
                 $query->where('slug', $slug)

@@ -2,6 +2,7 @@
 
 use App\Livewire\Concerns\WithSeo;
 use App\Models\Article;
+use App\Settings\ArticleSetting;
 use Livewire\Attributes\Computed;
 use Livewire\Volt\Component;
 use Livewire\WithPagination;
@@ -21,22 +22,24 @@ new class extends Component {
     }
 
     #[Computed]
-    public function breadcrumbs()
+    public function pageSetting()
     {
-        return [
-            'Articles' => route('articles.index'),
-        ];
+        return app(ArticleSetting::class);
     }
 
     public function mount()
     {
+        if (! $this->pageSetting->enabled) {
+            abort(404);
+        }
+
         $this->seo(relativeTitle: 'Articles');
     }
 }; ?>
 
 <x-layouts.page
-    title="Writing on software design, company building, and the aerospace industry."
-    intro="All of my long-form thoughts on programming, leadership, product design, and more, collected in chronological order."
+    title="{{ $this->pageSetting->title }}"
+    intro="{{ $this->pageSetting->description }}"
     breadcrumb="Articles"
 >
     <div class="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
