@@ -6,6 +6,18 @@
         <flux:navbar.item icon="home" :href="route('home')" :current="request()->routeIs('home')" wire:navigate>
             Home
         </flux:navbar.item>
+
+        @if (app(\App\Settings\About::class)->enabled)
+            <flux:navbar.item
+                icon="user-circle"
+                :href="route('about.index')"
+                :current="request()->routeIs('about*')"
+                wire:navigate
+            >
+                About
+            </flux:navbar.item>
+        @endif
+
         @if (app(\App\Settings\ArticleSetting::class)->enabled)
             <flux:navbar.item
                 icon="document-text"

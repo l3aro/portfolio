@@ -37,11 +37,7 @@ new class extends Component {
     }
 }; ?>
 
-<x-layouts.page
-    title="{{ $this->pageSetting->title }}"
-    intro="{{ $this->pageSetting->description }}"
-    breadcrumb="Articles"
->
+<x-layouts.page :title="$this->pageSetting->title" :intro="$this->pageSetting->description" breadcrumb="Articles">
     <div class="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
         <div class="flex max-w-3xl flex-col space-y-16">
             @foreach ($this->articles as $article)

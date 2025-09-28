@@ -21,7 +21,7 @@
             {{ $intro }}
         </p>
     </header>
-    <div class="mt-16 sm:mt-20">
+    <div class="mt-16 sm:mt-20 space-y-20">
         {{ $slot }}
     </div>
 </div>
