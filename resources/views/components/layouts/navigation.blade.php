@@ -14,6 +14,16 @@
         >
             Articles
         </flux:navbar.item>
+        @if (app(\App\Settings\TechRecommendation::class)->enabled)
+            <flux:navbar.item
+                icon="wrench-screwdriver"
+                :href="route('uses.index')"
+                :current="request()->routeIs('uses*')"
+                wire:navigate
+            >
+                Uses
+            </flux:navbar.item>
+        @endif
     </flux:navbar>
     <flux:spacer />
     <flux:navbar class="me-4">
@@ -66,5 +76,15 @@
         >
             Articles
         </flux:sidebar.item>
+        @if (app(\App\Settings\TechRecommendation::class)->enabled)
+            <flux:sidebar.item
+                icon="wrench-screwdriver"
+                :href="route('uses.index')"
+                :current="request()->routeIs('uses*')"
+                wire:navigate
+            >
+                Uses
+            </flux:sidebar.item>
+        @endif
     </flux:sidebar.nav>
 </flux:sidebar>
