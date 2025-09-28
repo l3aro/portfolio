@@ -112,4 +112,11 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    'cv' => [
+        'auth' => [
+            'username' => env('CV_AUTH_USERNAME'),
+            'password' => env('CV_AUTH_PASSWORD'),
+        ],
+    ],
+
 ];

@@ -7,3 +7,4 @@ Volt::route('about', 'about')->name('about.index');
 Volt::route('articles', 'articles')->name('articles.index');
 Volt::route('articles/{slug}', 'article')->name('articles.show');
 Volt::route('uses', 'uses')->name('uses.index');
+Volt::route('cv', 'cv')->name('cv')->middleware('auth.basic');

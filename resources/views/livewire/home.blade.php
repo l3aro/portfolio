@@ -4,9 +4,16 @@ use App\Models\Article;
 use Livewire\Attributes\Computed;
 use Livewire\Volt\Component;
 use App\Livewire\Concerns\WithSeo;
+use App\Actions\GenerateCvForDownload;
+use App\Settings\About;
+use App\Data\AboutWorkExperienceData;
+use DanHarrin\LivewireRateLimiting\WithRateLimiting;
+use Filament\Notifications\Notification;
+use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 
 new class extends Component {
     use WithSeo;
+    use WithRateLimiting;
 
     #[Computed]
     public function articles()
@@ -23,32 +30,26 @@ new class extends Component {
     #[Computed]
     public function positions()
     {
-        return [
-            [
-                'company' => 'Planetaria',
-                'title' => 'CEO',
-                'start' => '2019',
-                'end' => 'Present',
-            ],
-            [
-                'company' => 'Airbnb',
-                'title' => 'Product Designer',
-                'start' => '2014',
-                'end' => '2019',
-            ],
-            [
-                'company' => 'Facebook',
-                'title' => 'iOS Software Engineer',
-                'start' => '2011',
-                'end' => '2014',
-            ],
-            [
-                'company' => 'Starbucks',
-                'title' => 'Shift Supervisor',
-                'start' => '2008',
-                'end' => '2011',
-            ],
-        ];
+        return AboutWorkExperienceData::collect(app(About::class)->workExperience);
+    }
+
+    public function download()
+    {
+        try {
+            $this->rateLimit(maxAttempts: 1, component: 'home');
+        } catch (TooManyRequestsException $exception) {
+            Notification::make()
+                ->title('Too many requests')
+                ->body("Slow down! Please wait another {$exception->secondsUntilAvailable} seconds to download my CV.")
+                ->warning()
+                ->send();
+
+            return;
+        }
+
+        return response()
+            ->download(GenerateCvForDownload::make()->handle())
+            ->deleteFileAfterSend(true);
     }
 
     public function mount()
@@ -95,9 +96,15 @@ new class extends Component {
                             @endforeach
                         </ol>
 
-                        <flux:button class="mt-6 w-full transition cursor-pointer" variant="filled">
-                            Download CV
-                            <flux:icon name="arrow-down" class="size-4" />
+                        <flux:button
+                            wire:click="download"
+                            class="mt-6 w-full transition cursor-pointer"
+                            variant="filled"
+                        >
+                            <div class="flex items-center gap-2">
+                                Download CV
+                                <flux:icon name="arrow-down" class="size-4" />
+                            </div>
                         </flux:button>
                     </div>
                 </div>
