@@ -1,6 +1,6 @@
 <flux:header container class="bg-zinc-50 dark:bg-zinc-900 ring-1 ring-zinc-200 dark:ring-zinc-300/20">
     <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
-    <flux:brand href="#" :logo="asset('images/avatar.jpg')" class="max-lg:hidden" />
+    <flux:brand :href="route('home')" :logo="asset('images/avatar.jpg')" class="max-lg:hidden" wire:navigate />
     <flux:spacer />
     <flux:navbar class="-mb-px max-lg:hidden">
         <flux:navbar.item icon="home" :href="route('home')" :current="request()->routeIs('home')" wire:navigate>
@@ -74,7 +74,12 @@
     class="lg:hidden bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-700"
 >
     <flux:sidebar.header>
-        <flux:sidebar.brand href="#" :logo="asset('images/avatar.jpg')" :logo:dark="asset('images/avatar.jpg')" />
+        <flux:sidebar.brand
+            :href="route('home')"
+            :logo="asset('images/avatar.jpg')"
+            :logo:dark="asset('images/avatar.jpg')"
+            wire:navigate
+        />
         <flux:sidebar.collapse
             class="in-data-flux-sidebar-on-desktop:not-in-data-flux-sidebar-collapsed-desktop:-mr-2"
         />

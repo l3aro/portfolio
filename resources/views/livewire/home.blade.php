@@ -84,7 +84,7 @@ new class extends Component {
                         <x-home.article :$article />
                     @endforeach
                 </div>
-                <div class="space-y-10 lg:pl-16 xl:pl-24">
+                <div class="space-y-10 lg:pl-16 xl:pl-10">
                     <div class="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
                         <h2 class="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                             <flux:icon name="briefcase" class="size-6 flex-none" />
