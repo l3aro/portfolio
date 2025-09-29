@@ -21,7 +21,7 @@ use stdClass;
 
 class ManageAbout extends SettingsPage
 {
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserCircle;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedIdentification;
 
     protected static string $settings = About::class;
 
