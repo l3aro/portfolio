@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Laravel\Scout\Searchable;
 use Spatie\Tags\HasTags;
 
 /**
@@ -23,6 +24,7 @@ class Article extends Model implements HasUrl
     use SoftDeletes;
     use HasTags;
     use InteractsWithUrl;
+    use Searchable;
 
     protected $fillable = [
         'title',
@@ -44,6 +46,17 @@ class Article extends Model implements HasUrl
     {
         return [
             ['title' => $this->getTitle(), 'url' => $this->url()],
+        ];
+    }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => (int) $this->getKey(),
+            'title' => $this->title,
+            'description' => $this->description,
+            'content' => $this->content,
+            'published_at' => $this->published_at,
         ];
     }
 }
