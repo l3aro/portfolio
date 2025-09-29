@@ -8,6 +8,10 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+        @if (str(app(\App\Settings\GeneralSetting::class)->googleAnalyticsKey)->isNotEmpty() && app()->isProduction())
+            <x-layouts.google-analytics />
+        @endif
+
         <style>
             [x-cloak] {
                 display: none !important;
