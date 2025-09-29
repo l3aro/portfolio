@@ -12,6 +12,7 @@ class GeneralSetting extends Settings
     public ?string $siteLogo;
     public ?string $siteImage;
     public ?string $googleAnalyticsKey;
+    public ?array $socials;
 
     public static function group(): string
     {

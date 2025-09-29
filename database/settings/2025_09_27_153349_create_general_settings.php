@@ -12,6 +12,7 @@ return new class extends SettingsMigration {
         $this->migrator->add(GeneralSetting::group() . '.siteLogo', '');
         $this->migrator->add(GeneralSetting::group() . '.siteImage', '');
         $this->migrator->add(GeneralSetting::group() . '.googleAnalyticsKey', '');
+        $this->migrator->add(GeneralSetting::group() . '.socials', []);
     }
 
     public function down(): void
@@ -22,5 +23,6 @@ return new class extends SettingsMigration {
         $this->migrator->delete(GeneralSetting::group() . '.siteLogo');
         $this->migrator->delete(GeneralSetting::group() . '.siteImage');
         $this->migrator->delete(GeneralSetting::group() . '.googleAnalyticsKey');
+        $this->migrator->delete(GeneralSetting::group() . '.socials');
     }
 };

@@ -8,9 +8,12 @@ use BackedEnum;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Guava\IconPicker\Forms\Components\IconPicker;
 use Illuminate\Support\Facades\Concurrency;
 use Illuminate\Support\Facades\Storage;
 
@@ -56,6 +59,19 @@ class ManageGeneralSetting extends SettingsPage
                     ->imageCropAspectRatio('2:1')
                     ->imageResizeTargetWidth('1200')
                     ->imageResizeTargetHeight('600'),
+                Repeater::make('socials')
+                    ->columnSpanFull()
+                    ->columns(2)
+                    ->schema([
+                        IconPicker::make('icon')
+                            ->required(),
+                        TextInput::make('url')
+                            ->required(),
+                        ToggleButtons::make('openInNewTab')
+                            ->boolean()
+                            ->inline()
+                            ->default(true),
+                    ]),
             ]);
     }
 

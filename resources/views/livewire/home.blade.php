@@ -6,7 +6,10 @@ use Livewire\Volt\Component;
 use App\Livewire\Concerns\WithSeo;
 use App\Actions\GenerateCvForDownload;
 use App\Settings\About;
+use App\Settings\GeneralSetting;
+use App\Settings\Landing;
 use App\Data\AboutWorkExperienceData;
+use App\Data\SocialData;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Notifications\Notification;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
@@ -28,9 +31,21 @@ new class extends Component {
     }
 
     #[Computed]
+    public function landing()
+    {
+        return app(Landing::class);
+    }
+
+    #[Computed]
     public function positions()
     {
         return AboutWorkExperienceData::collect(app(About::class)->workExperience);
+    }
+
+    #[Computed]
+    public function socials()
+    {
+        return SocialData::collect(app(GeneralSetting::class)->socials);
     }
 
     public function download()
@@ -60,22 +75,26 @@ new class extends Component {
 
 <div class="mt-9 w-full">
     <div class="mx-auto max-w-3xl">
-        <img src="{{ asset('images/avatar.jpg') }}" alt="Avatar" class="w-32 h-32 rounded-full mb-6 mx-auto" />
+        @if ($this->landing->avatar)
+            <img
+                src="{{ Storage::disk($this->landing->disk())->url($this->landing->avatar) }}"
+                alt="Avatar"
+                class="w-32 h-32 rounded-full mb-6 mx-auto"
+            />
+        @endif
+
         <h1 class="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-            Software designer, founder, and amateur astronaut.
+            {{ $this->landing->title }}
         </h1>
         <div class="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I'm Spencer, a software designer and entrepreneur based in New York City. I'm the founder and CEO of
-            Planetaria, where we develop technologies that empower regular people to explore space on their own terms.
+            {{ $this->landing->description }}
         </div>
-        <div class="mt-6 flex gap-6">
-            <flux:button href="https://github.com/l3aro" icon="github" target="blank" variant="ghost"></flux:button>
-            <flux:button
-                href="https://www.linkedin.com/in/bao-duong-924717186/"
-                icon="linkedin"
-                target="blank"
-                variant="ghost"
-            ></flux:button>
+        <div class="mt-6 flex gap-2">
+            @foreach ($this->socials ?? [] as $social)
+                <flux:button :href="$social->url" :target="$social->openInNewTab ? 'blank' : 'self'" variant="ghost">
+                    <x-dynamic-component :component="$social->icon" class="size-6" />
+                </flux:button>
+            @endforeach
         </div>
         <div class="mt-24 md:mt-28">
             <div class="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
