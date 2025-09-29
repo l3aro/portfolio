@@ -16,5 +16,8 @@
         "prettier-plugin-blade": "^2.1.21",
         "tailwindcss": "^4.1.13",
         "vite": "^7.0.4"
+    },
+    "dependencies": {
+        "highlight.js": "^11.11.1"
     }
 }

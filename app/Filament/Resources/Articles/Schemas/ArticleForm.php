@@ -60,6 +60,7 @@ class ArticleForm
                     ->collapsible()
                     ->schema([
                         RichEditor::make('content')
+                            ->fileAttachmentsDisk('article-attachments')
                             ->hiddenLabel()
                             ->columnSpanFull(),
                     ]),

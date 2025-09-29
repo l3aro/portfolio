@@ -41,7 +41,7 @@ new class extends Component {
             {{ $article->title }}
         </flux:breadcrumbs.item>
     </flux:breadcrumbs>
-    <article class="mt-8 sm:mt-16">
+    <article class="mt-8 sm:mt-16" x-init="hljs.highlightAll()">
         <header class="flex flex-col">
             <h1 class="mt-6 text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
                 {{ $article->title }}
@@ -54,7 +54,7 @@ new class extends Component {
                 <span class="ml-3">{{ $article->published_at->format('F j, Y') }}</span>
             </time>
         </header>
-        <div class="prose dark:prose-invert mt-8">
+        <div class="prose dark:prose-invert mt-8 max-w-none">
             {{ str($article->content)->toHtml() }}
         </div>
     </article>

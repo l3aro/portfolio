@@ -56,6 +56,15 @@ return [
             'report' => false,
         ],
 
+        'article-attachments' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/article-attachments'),
+            'url' => env('APP_URL') . '/storage/article-attachments',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
