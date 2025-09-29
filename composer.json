@@ -13,6 +13,7 @@
         "filament/spatie-laravel-tags-plugin": "^4.0",
         "halaxa/json-machine": "^1.2",
         "http-interop/http-factory-guzzle": "^1.2",
+        "intervention/image": "^3.11",
         "laravel/framework": "^12.0",
         "laravel/scout": "^10.19",
         "laravel/tinker": "^2.10.1",

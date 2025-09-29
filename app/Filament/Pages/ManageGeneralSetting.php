@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Actions\GenerateFavicon;
 use App\Settings\GeneralSetting;
 use BackedEnum;
 use Filament\Forms\Components\FileUpload;
@@ -10,6 +11,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Facades\Concurrency;
+use Illuminate\Support\Facades\Storage;
 
 class ManageGeneralSetting extends SettingsPage
 {
@@ -54,5 +57,15 @@ class ManageGeneralSetting extends SettingsPage
                     ->imageResizeTargetWidth('1200')
                     ->imageResizeTargetHeight('600'),
             ]);
+    }
+
+    protected function afterSave(): void
+    {
+        /** @var GeneralSetting $setting */
+        $setting = app(GeneralSetting::class);
+
+        $path = Storage::disk(GeneralSetting::disk())->path($setting->siteLogo);
+
+        Concurrency::defer(fn() => GenerateFavicon::make()->handle($path));
     }
 }

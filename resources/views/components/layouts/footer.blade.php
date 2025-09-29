@@ -14,7 +14,7 @@
             />
         </div>
         <p class="mt-8 text-center text-sm/6 text-zinc-600 md:order-1 md:mt-0 dark:text-zinc-400">
-            &copy; {{ now()->year }} Your Company, Inc. All rights reserved.
+            &copy; {{ now()->year }} {{ app(\App\Settings\GeneralSetting::class)->siteName }}. All rights reserved.
         </p>
     </div>
 </footer>
