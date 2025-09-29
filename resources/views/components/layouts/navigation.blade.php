@@ -42,7 +42,15 @@
     </flux:navbar>
     <flux:spacer />
     <flux:navbar class="me-4">
-        <flux:navbar.item icon="magnifying-glass" href="#" label="Search" />
+        <div x-data>
+            <flux:input
+                as="button"
+                placeholder="Search..."
+                icon="magnifying-glass"
+                kbd="⌘K"
+                x-on:click="$dispatch('toggle-spotlight')"
+            />
+        </div>
         <flux:dropdown x-data align="end">
             <flux:button variant="subtle" square class="group" aria-label="Preferred color scheme">
                 <flux:icon.sun
