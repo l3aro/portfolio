@@ -14,10 +14,8 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
     container:
       image: ghcr.io/l3aro/docker-laravel-base:main
-      user: root
     steps:
       - name: Checkout
         uses: actions/checkout@v4
