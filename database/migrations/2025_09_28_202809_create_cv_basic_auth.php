@@ -9,6 +9,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        echo config('auth.cv.auth.username');
+        echo config('auth.cv.auth.password');
         $user = new User();
         $user->name = 'CV Basic Auth';
         $user->email = config('auth.cv.auth.username');
