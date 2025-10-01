@@ -10,7 +10,7 @@ concurrency:
 
 env:
   REG_URL: ghcr.io
-  ENV: dev
+  ENV: testing
 
 jobs:
   build:
