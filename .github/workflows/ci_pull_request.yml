@@ -33,7 +33,7 @@ jobs:
           env-slug: ${{ env.ENV }}
           project-slug: ${{ vars.INFISICAL_PROJECT_SLUG }}
           export-type: "file"
-          file-output-path: "./html/.env"
+          file-output-path: "/.env"
 
       - name: Install dependencies
         run: |
@@ -43,6 +43,7 @@ jobs:
           pnpm install
       - name: Build frontend
         run: |
+          cp .env ./html/.env
           cd ./html
           pnpm build
       - name: Cache build output
