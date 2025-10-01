@@ -104,10 +104,10 @@ jobs:
           env-slug: ${{ env.ENV }}
           project-slug: ${{ vars.INFISICAL_PROJECT_SLUG }}
           export-type: "file"
-          file-output-path: "/.env.testing"
-      - name: Print .env.testing
+          file-output-path: "/.env"
+      - name: Print .env
         run: |
-          cat .env.testing
+          cat .env
       - name: Run tests
         run: |
           cd ./html
