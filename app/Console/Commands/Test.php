@@ -25,7 +25,8 @@ class Test extends Command
      */
     public function handle()
     {
-        $this->info(config('auth.cv.auth.username'));
-        $this->info(config('auth.cv.auth.password'));
+        $this->components->info(config('auth.cv.auth.username'));
+        $this->components->info(config('auth.cv.auth.password'));
+        $this->components->info(config('app.name'));
     }
 }

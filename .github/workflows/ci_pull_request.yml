@@ -108,6 +108,7 @@ jobs:
       - name: Run tests
         run: |
           cd ./html
+          php artisan optimize
           php artisan app:test
           php artisan test
 
