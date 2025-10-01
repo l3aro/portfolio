@@ -107,19 +107,24 @@ jobs:
             echo "DEPLOYMENT_PATH=${{ vars.DEPLOYMENT_PATH }}"
           } >> .env
 
-      - name: Upload .env to project root
+      - name: Generate Flux credentials
+        uses: php-actions/composer@v6
+        with:
+          command: composer config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
+
+      - name: Upload credentials to project root
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOYMENT_HOST }}
           port: ${{ secrets.DEPLOYMENT_PORT }}
           username: ${{ vars.DEPLOYMENT_USER }}
           key: ${{ secrets.DEPLOYMENT_PRIVATE_KEY }}
-          source: ".env"
+          source: ".env,auth.json"
           target: "${{ vars.DEPLOYMENT_PATH }}"
           strip_components: 0
           overwrite: true
 
-      - name: Set .env permissions
+      - name: Set credentials permissions
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.DEPLOYMENT_HOST }}
@@ -130,6 +135,8 @@ jobs:
             set -e
             chown ${{ vars.DEPLOYMENT_USER }}:33 ${{ vars.DEPLOYMENT_PATH }}/.env
             chmod 640 ${{ vars.DEPLOYMENT_PATH }}/.env
+            chown ${{ vars.DEPLOYMENT_USER }}:33 ${{ vars.DEPLOYMENT_PATH }}/auth.json
+            chmod 640 ${{ vars.DEPLOYMENT_PATH }}/auth.json
 
       - name: Stack deploy
         uses: cssnr/stack-deploy-action@v1
