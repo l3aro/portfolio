@@ -28,7 +28,7 @@ USER root
 
 RUN rm -f public/hot
 
-RUN cp -r /package/custom/entrypoint.d/ /etc/entrypoint.d/
+RUN cp /package/custom/entrypoint.d/* /etc/entrypoint.d/
 RUN chmod 755 /etc/entrypoint.d/
 
 COPY --chown=www-data:www-data . /var/www/html
