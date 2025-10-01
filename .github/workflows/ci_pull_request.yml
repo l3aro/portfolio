@@ -105,6 +105,9 @@ jobs:
           project-slug: ${{ vars.INFISICAL_PROJECT_SLUG }}
           export-type: "file"
           file-output-path: "/.env.testing"
+      - name: Print .env.testing
+        run: |
+          cat .env.testing
       - name: Run tests
         run: |
           cd ./html
