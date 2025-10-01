@@ -112,6 +112,9 @@ jobs:
         with:
           command: config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
 
+      - name: print composer config
+        run: cat auth.json
+
       - name: Upload credentials to project root
         uses: appleboy/scp-action@v0.1.7
         with:
