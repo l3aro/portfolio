@@ -128,7 +128,7 @@ jobs:
           key: ${{ secrets.DEPLOYMENT_PRIVATE_KEY }}
           script: |
             set -e
-            chown ${{ vars.DEPLOYMENT_USER }}:82 ${{ vars.DEPLOYMENT_PATH }}/.env
+            chown ${{ vars.DEPLOYMENT_USER }}:33 ${{ vars.DEPLOYMENT_PATH }}/.env
             chmod 640 ${{ vars.DEPLOYMENT_PATH }}/.env
 
       - name: Stack deploy
