@@ -107,14 +107,16 @@ jobs:
             echo "DEPLOYMENT_PATH=${{ vars.DEPLOYMENT_PATH }}"
           } >> .env
 
-      - name: Generate Flux credentials
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
+
+      - name: Generate Flux credentials
         run: |
           composer config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
 
-      - name: print composer config
+      - name: Print composer config
         run: cat auth.json
 
       - name: Upload credentials to project root
