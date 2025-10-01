@@ -108,9 +108,11 @@ jobs:
           } >> .env
 
       - name: Generate Flux credentials
-        uses: php-actions/composer@v6
+        uses: shivammathur/setup-php@v2
         with:
-          command: config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
+          php-version: '8.4'
+        run: |
+          composer config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
 
       - name: print composer config
         run: cat auth.json
