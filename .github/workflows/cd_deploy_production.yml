@@ -1,0 +1,164 @@
+name: Build and Deploy for Production
+
+on:
+  push:
+    branches: ["main"]
+
+concurrency:
+  group: build-and-deploy-production
+  cancel-in-progress: true
+
+env:
+  REG_URL: ghcr.io
+  ENV: prod
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: prod
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REG_URL }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 'Generate Tags'
+        id: tags
+        uses: cssnr/docker-tags-action@v1
+        with:
+          images: ${{ env.REG_URL }}/${{ github.repository }}
+          tags: ${{ github.sha }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: 'linux/amd64,linux/arm64'
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          labels: ${{ steps.tags.outputs.labels }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: prod
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get secrets from Infisical
+        uses: Infisical/secrets-action@v1.0.12
+        with:
+          client-id: ${{ vars.INFISICAL_CLIENT_ID }}
+          client-secret: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+          identity-id: ${{ vars.INFISICAL_IDENTITY_ID }}
+          domain: ${{ vars.INFISICAL_DOMAIN }}
+          env-slug: ${{ env.ENV }}
+          project-slug: ${{ vars.INFISICAL_PROJECT_SLUG }}
+          export-type: "file"
+          file-output-path: "/.env"
+
+      - name: Generate Traefik host rule
+        id: traefik_rule
+        run: |
+          # Split domains by comma and format them as Traefik host rules
+          IFS=',' read -ra DOMAINS <<< "${{ vars.TRAEFIK_WEB_DOMAINS }}"
+          HOST_RULE=""
+          for domain in "${DOMAINS[@]}"; do
+            domain=$(echo "$domain" | xargs)  # Trim whitespace
+            if [ -n "$HOST_RULE" ]; then
+              HOST_RULE="$HOST_RULE ||"
+            fi
+            HOST_RULE="$HOST_RULE Host(\`$domain\`)"
+          done
+          HOST_RULE=$(echo "$HOST_RULE" | xargs)  # Trim whitespace
+          echo "" >> .env
+          echo "TRAEFIK_WEB_HOST_RULE='$HOST_RULE'" >> .env
+          echo "Generated host rule: $HOST_RULE"
+
+      - name: Append deploy variables to env file
+        run: |
+          {
+            echo ""
+            echo "REG_URL=${{ env.REG_URL }}"
+            echo "TAG=${{ github.sha }}"
+            echo "ENV=${{ env.ENV }}"
+            echo "PROJECT_NAME=${{ github.repository }}"
+            echo "STACK_NAME=${{ github.event.repository.name }}-${{ env.ENV }}"
+            echo "DEPLOYMENT_PATH=${{ vars.DEPLOYMENT_PATH }}"
+          } >> .env
+
+      - name: Upload .env to project root
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOYMENT_HOST }}
+          port: ${{ secrets.DEPLOYMENT_PORT }}
+          username: ${{ vars.DEPLOYMENT_USER }}
+          key: ${{ secrets.DEPLOYMENT_PRIVATE_KEY }}
+          source: ".env"
+          target: "${{ vars.DEPLOYMENT_PATH }}"
+          strip_components: 0
+          overwrite: true
+
+      - name: Set .env permissions
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOYMENT_HOST }}
+          port: ${{ secrets.DEPLOYMENT_PORT }}
+          username: ${{ vars.DEPLOYMENT_USER }}
+          key: ${{ secrets.DEPLOYMENT_PRIVATE_KEY }}
+          script: |
+            set -e
+            chown ${{ vars.DEPLOYMENT_USER }}:82 ${{ vars.DEPLOYMENT_PATH }}/.env
+            chmod 640 ${{ vars.DEPLOYMENT_PATH }}/.env
+
+      - name: Stack deploy
+        uses: cssnr/stack-deploy-action@v1
+        with:
+          name: ${{ github.event.repository.name }}-${{ env.ENV }}
+          file: docker-compose.prod.yml
+          host: ${{ secrets.DEPLOYMENT_HOST }}
+          port: ${{ secrets.DEPLOYMENT_PORT }}
+          user: ${{ vars.DEPLOYMENT_USER }}
+          ssh_key: ${{ secrets.DEPLOYMENT_PRIVATE_KEY }}
+          env_file: ./.env
+          registry_host: ${{ env.REG_URL }}
+          registry_user: ${{ github.actor }}
+          registry_pass: ${{ secrets.GITHUB_TOKEN }}
+          prune: true
+          detach: false
+
+  cleanup_ghcr:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Delete old container versions, keep 10
+        uses: actions/delete-package-versions@v5
+        with:
+          owner: ${{ github.repository_owner }}
+          package-name: ${{ github.event.repository.name }}
+          package-type: container
+          min-versions-to-keep: 10
+          delete-only-untagged-versions: false

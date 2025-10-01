@@ -5,7 +5,7 @@ arg = $(filter-out $@,$(MAKECMDGOALS))
 	@:
 
 ENV?=dev
-STACK_NAME?=blog
+STACK_NAME?=portfolio
 PROJECT_NAME?=l3aro/${STACK_NAME}
 TAG?=latest
 DC_USER?=www-data

@@ -1,0 +1,179 @@
+name: QA
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: pr-test-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REG_URL: ghcr.io
+  ENV: testing
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/l3aro/docker-laravel-base:main
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: html
+
+      - name: Get secrets from Infisical
+        uses: Infisical/secrets-action@v1.0.12
+        with:
+          client-id: ${{ vars.INFISICAL_CLIENT_ID }}
+          client-secret: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+          identity-id: ${{ vars.INFISICAL_IDENTITY_ID }}
+          domain: ${{ vars.INFISICAL_DOMAIN }}
+          env-slug: ${{ env.ENV }}
+          project-slug: ${{ vars.INFISICAL_PROJECT_SLUG }}
+          export-type: "file"
+          file-output-path: "/html/.env"
+
+      - name: Install dependencies
+        run: |
+          cd ./html
+          composer config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
+          composer install
+          pnpm install
+      - name: Build frontend
+        run: |
+          cd ./html
+          pnpm build
+      - name: Cache build output
+        uses: actions/cache@v4
+        with:
+          path: |
+            html/node_modules
+            html/vendor
+            html/public/build
+            html/.env
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/l3aro/docker-laravel-base:main
+    services:
+      postgres_test:
+        image: timescale/timescaledb:2.20.3-pg17
+        env:
+          POSTGRES_DB: laravel
+          POSTGRES_USER: laravel
+          POSTGRES_PASSWORD: laravel
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U laravel" --health-interval=10s --health-timeout=5s --health-retries=5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=5
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: html
+      - name: Restore build output
+        uses: actions/cache@v4
+        with:
+          path: |
+            html/node_modules
+            html/vendor
+            html/public/build
+            html/.env
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+      - name: Run tests
+        run: |
+          cd ./html
+          php artisan test
+
+  pint:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/l3aro/docker-laravel-base:main
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: html
+      - name: Restore build output
+        uses: actions/cache@v4
+        with:
+          path: |
+            html/node_modules
+            html/vendor
+            html/public/build
+            html/.env
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+      - name: Run Pint
+        run: |
+          cd ./html
+          ./vendor/bin/pint
+
+  prettier:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/l3aro/docker-laravel-base:main
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: html
+      - name: Restore build output
+        uses: actions/cache@v4
+        with:
+          path: |
+            html/node_modules
+            html/vendor
+            html/public/build
+            html/.env
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+      - name: Run Prettier
+        run: |
+          cd ./html
+          npx prettier ./resources/css/ ./resources/js/ ./resources/views/ --check
+
+  phpstan:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/l3aro/docker-laravel-base:main
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: html
+      - name: Restore build output
+        uses: actions/cache@v4
+        with:
+          path: |
+            html/node_modules
+            html/vendor
+            html/public/build
+            html/.env
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+      - name: Run PHPStan
+        run: |
+          cd ./html
+          ./vendor/bin/phpstan analyse --memory-limit=2G

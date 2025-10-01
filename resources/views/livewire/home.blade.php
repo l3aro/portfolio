@@ -8,6 +8,7 @@ use App\Actions\GenerateCvForDownload;
 use App\Settings\About;
 use App\Settings\GeneralSetting;
 use App\Settings\Landing;
+use App\Settings\ArticleSetting;
 use App\Data\AboutWorkExperienceData;
 use App\Data\SocialData;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
@@ -21,6 +22,10 @@ new class extends Component {
     #[Computed]
     public function articles()
     {
+        if (! app(ArticleSetting::class)->enabled) {
+            return [];
+        }
+
         return Article::query()
             ->withWhereHas('url')
             ->whereNotNull('published_at')
@@ -37,9 +42,15 @@ new class extends Component {
     }
 
     #[Computed]
+    public function about()
+    {
+        return app(About::class);
+    }
+
+    #[Computed]
     public function positions()
     {
-        return AboutWorkExperienceData::collect(app(About::class)->workExperience);
+        return AboutWorkExperienceData::collect($this->about->workExperience);
     }
 
     #[Computed]
@@ -104,28 +115,30 @@ new class extends Component {
                     @endforeach
                 </div>
                 <div class="space-y-10 lg:pl-16 xl:pl-10">
-                    <div class="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
-                        <h2 class="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                            <flux:icon name="briefcase" class="size-6 flex-none" />
-                            <span class="ml-3">Work</span>
-                        </h2>
-                        <ol class="mt-6 space-y-4">
-                            @foreach ($this->positions as $position)
-                                <x-home.position :$position />
-                            @endforeach
-                        </ol>
+                    @if ($this->about->enabled)
+                        <div class="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
+                            <h2 class="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                                <flux:icon name="briefcase" class="size-6 flex-none" />
+                                <span class="ml-3">Work</span>
+                            </h2>
+                            <ol class="mt-6 space-y-4">
+                                @foreach ($this->positions as $position)
+                                    <x-home.position :$position />
+                                @endforeach
+                            </ol>
 
-                        <flux:button
-                            wire:click="download"
-                            class="mt-6 w-full transition cursor-pointer"
-                            variant="filled"
-                        >
-                            <div class="flex items-center gap-2">
-                                Download CV
-                                <flux:icon name="arrow-down" class="size-4" />
-                            </div>
-                        </flux:button>
-                    </div>
+                            <flux:button
+                                wire:click="download"
+                                class="mt-6 w-full transition cursor-pointer"
+                                variant="filled"
+                            >
+                                <div class="flex items-center gap-2">
+                                    Download CV
+                                    <flux:icon name="arrow-down" class="size-4" />
+                                </div>
+                            </flux:button>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
