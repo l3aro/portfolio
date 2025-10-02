@@ -15,6 +15,7 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'scheme' => env('APP_URL_SCHEME', 'http'),
     /*
     |--------------------------------------------------------------------------
     | Application Environment
