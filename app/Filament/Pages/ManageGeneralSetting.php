@@ -80,8 +80,10 @@ class ManageGeneralSetting extends SettingsPage
         /** @var GeneralSetting $setting */
         $setting = app(GeneralSetting::class);
 
-        $path = Storage::disk(GeneralSetting::disk())->path($setting->siteLogo);
+        if (str($setting->siteLogo)->isNotEmpty()) {
+            $path = Storage::disk(GeneralSetting::disk())->path($setting->siteLogo);
 
-        Concurrency::defer(fn() => GenerateFavicon::make()->handle($path));
+            Concurrency::defer(fn() => GenerateFavicon::make()->handle($path));
+        }
     }
 }
