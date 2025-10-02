@@ -54,8 +54,13 @@ new #[Layout('components.layouts.simple')] class extends Component {
         <header class="flex justify-between items-start">
             <div class="flex gap-4 items-center">
                 @if (str($this->generalSetting->siteLogo)->isNotEmpty())
-                    <img src="{{ Storage::disk($this->generalSetting->disk())->url($this->generalSetting->siteLogo) }}" alt="Avatar" class="w-32 h-32 rounded-full shadow" />
+                    <img
+                        src="{{ Storage::disk($this->generalSetting->disk())->url($this->generalSetting->siteLogo) }}"
+                        alt="Avatar"
+                        class="w-32 h-32 rounded-full shadow"
+                    />
                 @endif
+
                 <div>
                     <h1 class="text-3xl font-bold tracking-tight text-zinc-800 sm:text-4xl dark:text-zinc-100">
                         {{ $this->about->name }}
@@ -83,6 +88,7 @@ new #[Layout('components.layouts.simple')] class extends Component {
                 <p class="text-base text-zinc-600 dark:text-zinc-400">{{ $this->about->careerObjective }}</p>
             </div>
         @endif
+
         @if (count($this->workExperience) > 0)
             <div class="space-y-5">
                 <h2 class="text-base font-semibold text-zinc-500 dark:text-zinc-400">// WORK EXPERIENCE</h2>
@@ -105,26 +111,28 @@ new #[Layout('components.layouts.simple')] class extends Component {
             </div>
         @endif
 
-        @if (count($this->skills) > 0)
-            <div class="grid grid-cols-2">
+        <div class="grid grid-cols-2">
+            @if (count($this->skills) > 0)
                 <div class="space-y-5">
                     <h2 class="text-base font-semibold text-zinc-500 dark:text-zinc-400">// SKILLS</h2>
-                <div class="space-y-10">
-                    @foreach ($this->skills as $skill)
-                        <x-cv.skill :$skill />
-                    @endforeach
+                    <div class="space-y-10">
+                        @foreach ($this->skills as $skill)
+                            <x-cv.skill :$skill />
+                        @endforeach
+                    </div>
                 </div>
-            </div>
-        @endif
-        @if (count($this->educations) > 0)
-            <div class="space-y-5">
-                <h2 class="text-base font-semibold text-zinc-500 dark:text-zinc-400">// EDUCATION</h2>
-                <div class="space-y-10">
-                    @foreach ($this->educations as $education)
-                        <x-cv.education :$education />
-                    @endforeach
+            @endif
+
+            @if (count($this->educations) > 0)
+                <div class="space-y-5">
+                    <h2 class="text-base font-semibold text-zinc-500 dark:text-zinc-400">// EDUCATION</h2>
+                    <div class="space-y-10">
+                        @foreach ($this->educations as $education)
+                            <x-cv.education :$education />
+                        @endforeach
+                    </div>
                 </div>
-            </div>
-        @endif
+            @endif
+        </div>
     </div>
 </div>
