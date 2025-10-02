@@ -114,10 +114,10 @@ jobs:
 
       - name: Generate Flux credentials
         run: |
-          composer config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
-
-      - name: Print composer config
-        run: cat auth.json
+          mkdir -p ~/.composer
+          echo '{"http-basic":{"composer.fluxui.dev":{"username":"'${{ secrets.FLUX_USERNAME }}'","password":"'${{ secrets.FLUX_LICENSE_KEY }}"}}}' > auth.json
+          chmod 644 auth.json
+          cat auth.json
 
       - name: Upload credentials to project root
         uses: appleboy/scp-action@v0.1.7
