@@ -114,8 +114,16 @@ jobs:
 
       - name: Generate Flux credentials
         run: |
-          mkdir -p ~/.composer
-          echo '{"http-basic":{"composer.fluxui.dev":{"username":"'${{ secrets.FLUX_USERNAME }}'","password":"'${{ secrets.FLUX_LICENSE_KEY }}"}}}' > auth.json
+          cat > auth.json << EOF
+{
+  "http-basic": {
+    "composer.fluxui.dev": {
+      "username": "${{ secrets.FLUX_USERNAME }}",
+      "password": "${{ secrets.FLUX_LICENSE_KEY }}"
+    }
+  }
+}
+EOF
           chmod 644 auth.json
           cat auth.json
 
