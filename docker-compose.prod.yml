@@ -40,7 +40,7 @@ services:
       - web_storage:/var/www/html/storage/app
       - web_logs:/var/www/html/storage/logs
       - ${DEPLOYMENT_PATH}/.env:/var/www/html/.env:ro
-      - ${DEPLOYMENT_PATH}/auth.json:/var/www/html/.env:ro
+      - ${DEPLOYMENT_PATH}/auth.json:/var/www/html/auth.json:ro
     depends_on:
       - postgres
       - redis
