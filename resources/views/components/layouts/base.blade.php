@@ -24,6 +24,8 @@
 
     <body class="min-h-screen flex flex-col bg-white dark:bg-black max-w-7xl mx-auto">
         {{ $slot }}
+        @livewire('notifications')
+        @livewire('livewire-ui-spotlight')
         @fluxScripts
         @filamentScripts
     </body>
