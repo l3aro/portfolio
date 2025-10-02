@@ -5,6 +5,7 @@ namespace App\Actions;
 use Intervention\Image\Drivers\Imagick\Driver;
 use Intervention\Image\ImageManager;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Support\Facades\Storage;
 
 class GenerateFavicon
 {
@@ -26,11 +27,11 @@ class GenerateFavicon
         $manager
             ->read($path)
             ->resize(16, 16)
-            ->save(public_path('favicon.ico'));
+            ->save(Storage::disk('favicon')->path('favicon.ico'));
 
         $manager
             ->read($path)
             ->resize(32, 32)
-            ->save(public_path('favicon.png'));
+            ->save(Storage::disk('favicon')->path('favicon.png'));
     }
 }

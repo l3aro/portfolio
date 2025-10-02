@@ -47,6 +47,15 @@ return [
             'report' => false,
         ],
 
+        'favicon' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/favicon'),
+            'url' => env('APP_URL') . '/storage/favicon',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
         'settings' => [
             'driver' => 'local',
             'root' => storage_path('app/public/settings'),

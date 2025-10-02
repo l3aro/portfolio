@@ -21,7 +21,6 @@ trait WithSeo
         $keywords = $keywords ?? $setting->siteKeywords;
 
         seo()
-            ->favicon()
             ->title($title)
             ->description($description ?? $setting->siteDescription)
             ->keywords(implode(',', $keywords))
