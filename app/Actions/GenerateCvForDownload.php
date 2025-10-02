@@ -32,7 +32,7 @@ class GenerateCvForDownload
 
     protected function generatePdf(string $filepath): void
     {
-        Browsershot::url('http://localhost:8080/cv')
+        Browsershot::url(route('cv'))
             ->noSandbox()
             ->format('A4')
             ->disableCaptureURLS()
