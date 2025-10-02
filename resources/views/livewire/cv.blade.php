@@ -8,6 +8,8 @@ use App\Data\AboutWorkExperienceData;
 use App\Data\AboutSkillData;
 use App\Data\AboutProjectData;
 use App\Data\AboutEducationData;
+use App\Settings\GeneralSetting;
+use Illuminate\Support\Facades\Storage;
 
 new #[Layout('components.layouts.simple')] class extends Component {
     #[Computed]
@@ -39,13 +41,22 @@ new #[Layout('components.layouts.simple')] class extends Component {
     {
         return AboutEducationData::collect($this->about->educations);
     }
+
+    #[Computed]
+    public function logo()
+    {
+        $setting = app(GeneralSetting::class);
+        return str($setting->siteLogo)->isNotEmpty()
+            ? Storage::disk($setting->disk())->url($setting->siteLogo)
+            : asset('images/avatar.jpg');
+    }
 }; ?>
 
 <div class="mx-auto max-w-3xl">
     <div class="mt-16">
         <header class="flex justify-between items-start">
             <div class="flex gap-4 items-center">
-                <img src="{{ asset('images/avatar.jpg') }}" alt="Avatar" class="w-32 h-32 rounded-full shadow" />
+                <img src="{{ $this->logo }}" alt="Avatar" class="w-32 h-32 rounded-full shadow" />
                 <div>
                     <h1 class="text-3xl font-bold tracking-tight text-zinc-800 sm:text-4xl dark:text-zinc-100">
                         {{ $this->about->name }}
