@@ -2,7 +2,6 @@
 @import '../../vendor/livewire/flux/dist/flux.css';
 @import '../../vendor/filament/support/resources/css/index.css';
 @import '../../vendor/filament/notifications/resources/css/index.css';
-@import '../../vendor/wire-elements/spotlight/resources/views/spotlight.blade.php';
 
 @plugin "@tailwindcss/typography";
 
