@@ -26,6 +26,8 @@ RUN cp /package/custom/config/.vimrc /var/www/.vimrc
 RUN chown www-data:www-data /var/www/.tmux.conf
 RUN chown www-data:www-data /var/www/.vimrc
 
+USER www-data
+
 FROM base AS prod
 
 USER root
