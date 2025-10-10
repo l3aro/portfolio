@@ -32,3 +32,6 @@ Thumbs.db
 .env.prod
 .env.dev
 .env.testing
+**/caddy
+frankenphp
+frankenphp-worker.php

@@ -9,6 +9,7 @@ services:
       retries: 3
       start_period: 60s
     restart: unless-stopped
+    command: ["php", "/var/www/html/artisan", "octane:start", "--server=frankenphp", "--port=8080", "--watch"]
     labels:
       - traefik.enable=true
       - traefik.http.routers.${STACK_NAME}-web.rule=Host(`${APP_DOMAIN}`)

@@ -11,6 +11,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s
+    command: ["php", "/var/www/html/artisan", "octane:start", "--server=frankenphp", "--port=8080"]
     networks:
       - app
       - traefik_proxy
