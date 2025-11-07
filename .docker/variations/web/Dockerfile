@@ -1,4 +1,4 @@
-FROM ghcr.io/l3aro/docker-laravel-base:main AS base
+FROM ghcr.io/l3aro/docker-laravel-base:frankenphp
 
 WORKDIR /var/www/html
 
@@ -13,23 +13,6 @@ USER www-data
 
 RUN npx puppeteer browsers install chrome-headless-shell
 
-FROM base AS dev
-
-USER root
-
-RUN apt-get install -y --no-install-recommends \
-    tmux git vim screen openssh-client lazygit \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN cp /package/custom/config/.tmux.conf /var/www/.tmux.conf
-RUN cp /package/custom/config/.vimrc /var/www/.vimrc
-RUN chown www-data:www-data /var/www/.tmux.conf
-RUN chown www-data:www-data /var/www/.vimrc
-
-USER www-data
-
-FROM base AS prod
-
 USER root
 
 RUN cp /package/custom/entrypoint.d/* /etc/entrypoint.d/
@@ -39,10 +22,6 @@ COPY --chmod=755 .docker/entrypoint.d/ /etc/entrypoint.d/
 
 COPY --chown=www-data:www-data . /var/www/html
 
-RUN rm -f public/hot
-
-ENV AUTORUN_ENABLED=true
 ENV PHP_OPCACHE_ENABLE=1
-ENV AUTORUN_LARAVEL_MIGRATION_ISOLATION=true
 
 USER www-data
