@@ -1,7 +1,5 @@
 FROM ghcr.io/l3aro/docker-laravel-base:frankenphp
 
-WORKDIR /var/www/html
-
 USER root
 
 RUN apt-get update && \
@@ -18,8 +16,13 @@ USER root
 RUN cp /package/custom/entrypoint.d/* /etc/entrypoint.d/
 RUN chmod 755 /etc/entrypoint.d/
 
+COPY --chmod=755 .docker/entrypoint.d/ /etc/entrypoint.d/
+
 COPY --chown=www-data:www-data . /var/www/html
 
+ENV AUTORUN_ENABLED=true
 ENV PHP_OPCACHE_ENABLE=1
+
+WORKDIR /var/www/html
 
 USER www-data
