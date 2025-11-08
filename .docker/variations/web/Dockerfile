@@ -16,7 +16,7 @@ USER root
 RUN cp /package/custom/entrypoint.d/* /etc/entrypoint.d/
 RUN chmod 755 /etc/entrypoint.d/
 
-COPY --chmod=755 ../../entrypoint.d/ /etc/entrypoint.d/
+COPY --chmod=755 ./.docker/entrypoint.d/ /etc/entrypoint.d/
 
 COPY --chown=www-data:www-data . /var/www/html
 
