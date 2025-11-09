@@ -125,7 +125,7 @@ jobs:
           port: ${{ secrets.DEPLOYMENT_PORT }}
           username: ${{ vars.DEPLOYMENT_USER }}
           key: ${{ secrets.DEPLOYMENT_PRIVATE_KEY }}
-          source: ".env,auth.json"
+          source: "auth.json"
           target: "${{ vars.DEPLOYMENT_PATH }}"
           strip_components: 0
           overwrite: true
@@ -139,8 +139,6 @@ jobs:
           key: ${{ secrets.DEPLOYMENT_PRIVATE_KEY }}
           script: |
             set -e
-            chown ${{ vars.DEPLOYMENT_USER }}:33 ${{ vars.DEPLOYMENT_PATH }}/.env
-            chmod 640 ${{ vars.DEPLOYMENT_PATH }}/.env
             chown ${{ vars.DEPLOYMENT_USER }}:33 ${{ vars.DEPLOYMENT_PATH }}/auth.json
             chmod 640 ${{ vars.DEPLOYMENT_PATH }}/auth.json
 
