@@ -53,6 +53,8 @@ jobs:
           push: true
           tags: ${{ steps.tags.outputs.tags }}
           labels: ${{ steps.tags.outputs.labels }}
+          cache-from: type=registry,ref=${{ steps.tags.outputs.tags }}
+          cache-to: type=inline
 
   deploy:
     needs: build
