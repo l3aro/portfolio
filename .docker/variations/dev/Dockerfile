@@ -24,3 +24,5 @@ RUN cp /package/custom/config/.tmux.conf /var/www/.tmux.conf
 RUN cp /package/custom/config/.vimrc /var/www/.vimrc
 RUN chown www-data:www-data /var/www/.tmux.conf
 RUN chown www-data:www-data /var/www/.vimrc
+
+COPY --chmod=755 .docker/entrypoint.d/ /etc/entrypoint.d/

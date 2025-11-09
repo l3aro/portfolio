@@ -37,7 +37,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 'Generate Tags'
+      - name: "Generate Tags"
         id: tags
         uses: cssnr/docker-tags-action@v1
         with:
@@ -49,7 +49,7 @@ jobs:
         with:
           context: .
           file: ".docker/variations/web/Dockerfile"
-          platforms: 'linux/amd64,linux/arm64'
+          platforms: "linux/amd64,linux/arm64"
           push: true
           tags: ${{ steps.tags.outputs.tags }}
           labels: ${{ steps.tags.outputs.labels }}
@@ -108,41 +108,9 @@ jobs:
             echo "PROJECT_NAME=${{ github.repository }}"
             echo "STACK_NAME=${{ github.event.repository.name }}-${{ env.ENV }}"
             echo "DEPLOYMENT_PATH=${{ vars.DEPLOYMENT_PATH }}"
+            echo "FLUX_USERNAME=${{ secrets.FLUX_USERNAME }}"
+            echo "FLUX_LICENSE_KEY=${{ secrets.FLUX_LICENSE_KEY }}"
           } >> .env
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-
-      - name: Generate Flux credentials
-        run: |
-          composer config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
-          chmod 644 auth.json
-
-      - name: Upload credentials to project root
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.DEPLOYMENT_HOST }}
-          port: ${{ secrets.DEPLOYMENT_PORT }}
-          username: ${{ vars.DEPLOYMENT_USER }}
-          key: ${{ secrets.DEPLOYMENT_PRIVATE_KEY }}
-          source: "auth.json"
-          target: "${{ vars.DEPLOYMENT_PATH }}"
-          strip_components: 0
-          overwrite: true
-
-      - name: Set credentials permissions
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.DEPLOYMENT_HOST }}
-          port: ${{ secrets.DEPLOYMENT_PORT }}
-          username: ${{ vars.DEPLOYMENT_USER }}
-          key: ${{ secrets.DEPLOYMENT_PRIVATE_KEY }}
-          script: |
-            set -e
-            chown ${{ vars.DEPLOYMENT_USER }}:33 ${{ vars.DEPLOYMENT_PATH }}/auth.json
-            chmod 640 ${{ vars.DEPLOYMENT_PATH }}/auth.json
 
       - name: Stack deploy
         uses: cssnr/stack-deploy-action@v1

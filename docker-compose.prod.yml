@@ -59,6 +59,8 @@ x-laravel-environment: &laravel-environment
   MEILISEARCH_KEY: '${MEILISEARCH_KEY}'
   OCTANE_SERVER: '${OCTANE_SERVER}'
   OCTANE_HTTPS: '${OCTANE_HTTPS}'
+  FLUX_USERNAME: '${FLUX_USERNAME}'
+  FLUX_LICENSE_KEY: '${FLUX_LICENSE_KEY}'
 
 services:
   web:
