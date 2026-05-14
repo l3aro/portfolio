@@ -19,9 +19,16 @@ COPY --chmod=755 ./.docker/entrypoint.d/ /etc/entrypoint.d/
 
 COPY --chown=www-data:www-data . /var/www/html
 
+WORKDIR /var/www/html
+
+ARG FLUX_USERNAME
+ARG FLUX_LICENSE_KEY
+RUN composer config http-basic.composer.fluxui.dev $FLUX_USERNAME $FLUX_LICENSE_KEY \
+    && composer install --no-dev --optimize-autoloader
+
+RUN pnpm install && pnpm build
+
 ENV AUTORUN_ENABLED=true
 ENV PHP_OPCACHE_ENABLE=1
-
-WORKDIR /var/www/html
 
 USER www-data

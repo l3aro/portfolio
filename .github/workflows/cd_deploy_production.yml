@@ -55,6 +55,9 @@ jobs:
           labels: ${{ steps.tags.outputs.labels }}
           cache-from: type=registry,ref=${{ steps.tags.outputs.tags }}
           cache-to: type=inline
+          build-args: |
+            FLUX_USERNAME=${{ secrets.FLUX_USERNAME }}
+            FLUX_LICENSE_KEY=${{ secrets.FLUX_LICENSE_KEY }}
 
   deploy:
     needs: build
