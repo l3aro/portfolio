@@ -17,6 +17,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use JsonMachine\Items;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Throwable;
 use stdClass;
 
 class ManageAbout extends SettingsPage
@@ -57,6 +58,28 @@ class ManageAbout extends SettingsPage
                     $setting->save();
 
                     $action->success();
+                }),
+            Action::make('export')
+                ->label('Export')
+                ->icon(Heroicon::OutlinedArrowTrendingDown)
+                ->action(function () {
+                    $setting = app(About::class);
+
+                    $data = [];
+                    foreach (['enabled', 'name', 'title', 'personalInfo', 'careerObjective',
+                              'workExperience', 'projects', 'skills', 'educations'] as $prop) {
+                        $data[$prop] = $setting->$prop;
+                    }
+
+                    try {
+                        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+                    } catch (Throwable) {
+                        abort(422, 'Unable to export about settings as valid JSON.');
+                    }
+
+                    return response()->streamDownload(function () use ($json) {
+                        echo $json;
+                    }, 'about-settings-' . date('Y-m-d_His') . '.json');
                 }),
         ];
     }

@@ -1,4 +1,4 @@
-FROM ghcr.io/l3aro/docker-laravel-base:frankenphp
+FROM ghcr.io/l3aro/docker-laravel-base:8.4-nginx
 
 WORKDIR /var/www/html
 
@@ -16,6 +16,11 @@ RUN apt-get update && \
     npm install -g puppeteer && \
     rm -rf /var/lib/apt/lists/*
 
+ARG USER_ID
+ARG GROUP_ID
+RUN docker-php-serversideup-set-id www-data $USER_ID:$GROUP_ID && \
+    docker-php-serversideup-set-file-permissions --owner $USER_ID:$GROUP_ID
+
 USER www-data
 
 RUN npx puppeteer browsers install chrome-headless-shell
@@ -25,4 +30,4 @@ RUN cp /package/custom/config/.vimrc /var/www/.vimrc
 RUN chown www-data:www-data /var/www/.tmux.conf
 RUN chown www-data:www-data /var/www/.vimrc
 
-COPY --chmod=755 .docker/entrypoint.d/ /etc/entrypoint.d/
+# COPY --chmod=755 .docker/entrypoint.d/ /etc/entrypoint.d/

@@ -66,15 +66,9 @@ services:
   web:
     environment:
       <<: *laravel-environment
+      HEALTHCHECK_PATH: /up
     image: ${REG_URL}/${PROJECT_NAME}:${TAG}
     working_dir: /var/www/html
-    healthcheck:
-      test: [ "CMD", "healthcheck-octane" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
-    command: ["php", "/var/www/html/artisan", "octane:start", "--server=frankenphp", "--port=8080"]
     networks:
       - app
       - traefik_proxy
