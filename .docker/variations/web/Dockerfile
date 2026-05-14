@@ -1,4 +1,4 @@
-FROM ghcr.io/l3aro/docker-laravel-base:frankenphp
+FROM ghcr.io/l3aro/docker-laravel-base:8.4-nginx
 
 USER root
 

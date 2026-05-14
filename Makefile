@@ -27,7 +27,7 @@ up:
 up-detach:
 	${DOCKER_COMPOSE} up -d
 build:
-	docker build -t ${REG_URL}/${PROJECT_NAME}:${TAG} -t ${REG_URL}/${PROJECT_NAME}:latest -f .docker/variations/${ENV}/Dockerfile .
+	docker build --build-arg USER_ID=${UID} --build-arg GROUP_ID=${GID} -t ${REG_URL}/${PROJECT_NAME}:${TAG} -t ${REG_URL}/${PROJECT_NAME}:latest -f .docker/variations/${ENV}/Dockerfile .
 push:
 	docker push ${REG_URL}/${PROJECT_NAME}:${TAG} \
 	&& docker push ${REG_URL}/${PROJECT_NAME}:latest
