@@ -11,6 +11,7 @@ x-postgres-configs: &postgres-config
 services:
   web:
     environment:
+      BROWSERSHOT_URL: http://localhost:8080
       HEALTHCHECK_PATH: /up
     image: ${REG_URL}/${PROJECT_NAME}:${TAG}
     working_dir: /var/www/html

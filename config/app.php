@@ -57,6 +57,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Browsershot URL
+    |--------------------------------------------------------------------------
+    |
+    | Internal URL used by Browsershot/Puppeteer for PDF generation.
+    | Override when the APP_URL is not resolvable from within the
+    | container (e.g., Docker with local dev domains).
+    |
+    */
+
+    'browsershot_url' => env('BROWSERSHOT_URL'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
