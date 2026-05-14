@@ -6,60 +6,78 @@
     /** @var \App\Data\AboutProjectData $project */
 @endphp
 
-<section class="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
-    <div class="grid max-w-3xl grid-cols-1 gap-y-8 items-baseline md:grid-cols-4">
-        <div class="flex flex-col gap-2">
-            <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+<section class="relative pl-5 print:pl-4">
+    {{-- Timeline line --}}
+    <div class="absolute left-0 top-1.5 bottom-1 w-px bg-gradient-to-b from-indigo-500/50 via-indigo-400/30 to-transparent print:from-indigo-600/50 print:via-indigo-600/30"></div>
+
+    {{-- Timeline dot --}}
+    <div class="absolute -left-[4px] top-1.5 w-2 h-2 rounded-full bg-indigo-500 ring-3 ring-white dark:ring-zinc-900 print:ring-white print:bg-indigo-600"></div>
+
+    <div class="grid grid-cols-1 gap-y-2 md:grid-cols-4 md:gap-x-5">
+        {{-- Project Name & Duration --}}
+        <div class="md:col-span-1">
+            <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 print:text-sm">
                 {{ $project->name }}
             </h3>
-            <p class="relative z-10 mb-3 flex items-center text-xs text-zinc-400 dark:text-zinc-500">
+            <p class="mt-0.5 text-xs font-medium text-zinc-500 dark:text-zinc-500 print:text-[11px]">
                 {{ $project->duration }}
             </p>
         </div>
-        <div class="md:col-span-3 space-y-4">
-            <div class="space-y-4">
-                <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                        <dt class="text-xs font-medium text-zinc-500 dark:text-zinc-400">Customer</dt>
-                        <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                            {{ $project->customer !== '' ? $project->customer : '—' }}
-                        </dd>
-                    </div>
-                    <div>
-                        <dt class="text-xs font-medium text-zinc-500 dark:text-zinc-400">Position</dt>
-                        <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                            {{ $project->position !== '' ? $project->position : '—' }}
-                        </dd>
-                    </div>
-                    <div>
-                        <dt class="text-xs font-medium text-zinc-500 dark:text-zinc-400">Team Size</dt>
-                        <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                            {{ $project->teamSize !== '' ? $project->teamSize : '—' }}
-                        </dd>
-                    </div>
-                    <div>
-                        <dt class="text-xs font-medium text-zinc-500 dark:text-zinc-400">Technologies</dt>
-                        <dd class="mt-1 text-sm text-zinc-900 dark:text-zinc-100">
-                            @php
-                                $techList = is_array($project->technologies) ? implode(', ', $project->technologies) : (string) $project->technologies;
-                            @endphp
 
-                            {{ $techList !== '' ? $techList : '—' }}
-                        </dd>
-                    </div>
-                </dl>
-            </div>
+        {{-- Details --}}
+        <div class="md:col-span-3 space-y-3 print:space-y-2">
+            {{-- Metadata Grid --}}
+            <dl class="grid grid-cols-2 sm:grid-cols-3 gap-2 print:gap-1.5">
+                <div>
+                    <dt class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 print:text-zinc-500">Customer</dt>
+                    <dd class="mt-0.5 text-sm text-zinc-700 dark:text-zinc-300 print:text-xs print:text-zinc-600">
+                        {{ $project->customer !== '' ? $project->customer : '—' }}
+                    </dd>
+                </div>
+                <div>
+                    <dt class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 print:text-zinc-500">Position</dt>
+                    <dd class="mt-0.5 text-sm text-zinc-700 dark:text-zinc-300 print:text-xs print:text-zinc-600">
+                        {{ $project->position !== '' ? $project->position : '—' }}
+                    </dd>
+                </div>
+                <div>
+                    <dt class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 print:text-zinc-500">Team Size</dt>
+                    <dd class="mt-0.5 text-sm text-zinc-700 dark:text-zinc-300 print:text-xs print:text-zinc-600">
+                        {{ $project->teamSize !== '' ? $project->teamSize : '—' }}
+                    </dd>
+                </div>
+            </dl>
 
-            <div class="mt-4">
-                <h4 class="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-2">Project Description</h4>
-                <ul class="list-disc ml-4 space-y-2">
-                    @foreach ($project->description as $description)
-                        <li class="text-sm text-zinc-900 dark:text-zinc-100">
-                            {{ $description }}
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
+            {{-- Technologies as Pills --}}
+            @php
+                $technologies = is_array($project->technologies) ? $project->technologies : array_filter(array_map('trim', explode(',', (string) $project->technologies)));
+            @endphp
+            @if (count($technologies) > 0)
+                <div>
+                    <dt class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-1.5 print:text-zinc-500 print:mb-1">Technologies</dt>
+                    <div class="flex flex-wrap gap-1 print:gap-1">
+                        @foreach ($technologies as $tech)
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-medium bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-600/20 dark:bg-indigo-400/10 dark:text-indigo-300 dark:ring-indigo-400/30 print:bg-indigo-50 print:text-indigo-700 print:ring-indigo-600/20">
+                                {{ trim($tech) }}
+                            </span>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            {{-- Description --}}
+            @if (count($project->description) > 0)
+                <div class="mt-2 print:mt-1.5">
+                    <ul class="space-y-1 print:space-y-0.5">
+                        @foreach ($project->description as $description)
+                            <li class="flex items-start gap-2 text-sm text-zinc-600 dark:text-zinc-400 print:text-xs print:text-zinc-600">
+                                <span class="mt-1.5 w-1 h-1 flex-shrink-0 rounded-full bg-indigo-400 dark:bg-indigo-500 print:bg-indigo-500"></span>
+                                <span class="leading-relaxed">{{ $description }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </div>
     </div>
 </section>

@@ -5,22 +5,22 @@
     /** @var \App\Data\AboutEducationData $education */
 @endphp
 
-<section class="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
-    <div class="grid grid-cols-1 gap-y-8 items-baseline">
-        <div class="flex flex-col gap-2">
-            <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">
-                {{ $education->institution }}
-            </h3>
-            <p class="relative z-10 mb-3 flex items-center text-xs text-zinc-400 dark:text-zinc-500">
-                {{ $education->duration }}
-            </p>
-        </div>
-        <div class="md:col-span-3">
-            <div class="group relative flex flex-col items-start">
-                <h4 class="text-base tracking-tight text-zinc-800 dark:text-zinc-100">
-                    Major: {{ $education->major }}
-                </h4>
-            </div>
-        </div>
+<section class="relative pl-5 print:pl-4">
+    {{-- Timeline line --}}
+    <div class="absolute left-0 top-1.5 bottom-1 w-px bg-gradient-to-b from-indigo-500/50 via-indigo-400/30 to-transparent print:from-indigo-600/50 print:via-indigo-600/30"></div>
+
+    {{-- Timeline dot --}}
+    <div class="absolute -left-[4px] top-1.5 w-2 h-2 rounded-full bg-indigo-500 ring-3 ring-white dark:ring-zinc-900 print:ring-white print:bg-indigo-600"></div>
+
+    <div>
+        <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 print:text-sm">
+            {{ $education->institution }}
+        </h3>
+        <p class="mt-0.5 text-xs font-medium text-zinc-500 dark:text-zinc-500 print:text-[11px]">
+            {{ $education->duration }}
+        </p>
+        <p class="mt-1 text-sm font-medium text-indigo-600 dark:text-indigo-400 print:text-xs print:text-indigo-700">
+            {{ $education->major }}
+        </p>
     </div>
 </section>

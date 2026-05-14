@@ -6,17 +6,15 @@
     /** @var \App\Data\AboutSkillData $skill */
 @endphp
 
-<section class="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
-    <div class="grid max-w-3xl grid-cols-2 gap-y-8 items-baseline">
-        <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">
-            {{ str($skill->type)->snake()->replace('_', ' ')->title() }}
-        </h3>
-        <ul class="list-disc ml-4">
-            @foreach ($skill->skill as $item)
-                <li class="relative z-10 mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                    {{ $item }}
-                </li>
-            @endforeach
-        </ul>
+<section>
+    <h3 class="text-sm font-bold text-zinc-800 dark:text-zinc-200 mb-2 print:text-sm print:mb-1.5">
+        {{ str($skill->type)->snake()->replace('_', ' ')->title() }}
+    </h3>
+    <div class="flex flex-wrap gap-1.5 print:gap-1">
+        @foreach ($skill->skill as $item)
+            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-zinc-100 text-zinc-700 ring-1 ring-inset ring-zinc-200/80 dark:bg-zinc-800 dark:text-zinc-300 dark:ring-zinc-700/60 hover:bg-zinc-200/80 dark:hover:bg-zinc-700/60 transition-colors print:bg-zinc-100 print:text-zinc-700 print:ring-zinc-200 print:hover:bg-zinc-100">
+                {{ $item }}
+            </span>
+        @endforeach
     </div>
 </section>
