@@ -17,6 +17,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use JsonMachine\Items;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Throwable;
 use stdClass;
 
 class ManageAbout extends SettingsPage
@@ -70,7 +71,11 @@ class ManageAbout extends SettingsPage
                         $data[$prop] = $setting->$prop;
                     }
 
-                    $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+                    try {
+                        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+                    } catch (Throwable) {
+                        abort(422, 'Unable to export about settings as valid JSON.');
+                    }
 
                     return response()->streamDownload(function () use ($json) {
                         echo $json;

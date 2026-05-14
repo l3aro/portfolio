@@ -10,6 +10,8 @@ PROJECT_NAME?=l3aro/${STACK_NAME}
 TAG?=latest
 DC_USER?=www-data
 REG_URL?=ghcr.io
+UID?=1000
+GID?=1000
 
 ### MAIN docker-compose configs
 
