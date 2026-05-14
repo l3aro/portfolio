@@ -24,7 +24,8 @@ WORKDIR /var/www/html
 ARG FLUX_USERNAME
 ARG FLUX_LICENSE_KEY
 RUN composer config http-basic.composer.fluxui.dev $FLUX_USERNAME $FLUX_LICENSE_KEY \
-    && composer install --no-dev --optimize-autoloader
+    && composer install --no-dev --optimize-autoloader \
+    && rm -f auth.json
 
 RUN pnpm install && pnpm build
 
