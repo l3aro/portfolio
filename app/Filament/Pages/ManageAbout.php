@@ -58,6 +58,24 @@ class ManageAbout extends SettingsPage
 
                     $action->success();
                 }),
+            Action::make('export')
+                ->label('Export')
+                ->icon(Heroicon::OutlinedArrowTrendingDown)
+                ->action(function () {
+                    $setting = app(About::class);
+
+                    $data = [];
+                    foreach (['enabled', 'name', 'title', 'personalInfo', 'careerObjective',
+                              'workExperience', 'projects', 'skills', 'educations'] as $prop) {
+                        $data[$prop] = $setting->$prop;
+                    }
+
+                    $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+                    return response()->streamDownload(function () use ($json) {
+                        echo $json;
+                    }, 'about-settings-' . date('Y-m-d_His') . '.json');
+                }),
         ];
     }
 
