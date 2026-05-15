@@ -39,7 +39,6 @@ class GenerateCvForDownload
             ->noSandbox()
             ->format('A4')
             ->disableCaptureURLS()
-            ->authenticate(config('auth.cv.auth.username'), config('auth.cv.auth.password'))
             ->savePdf($filepath);
     }
 }

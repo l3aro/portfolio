@@ -12,7 +12,7 @@
     </h3>
     <div class="flex flex-wrap gap-1.5 print:gap-1">
         @foreach ($skill->skill as $item)
-            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-zinc-100 text-zinc-700 ring-1 ring-inset ring-zinc-200/80 dark:bg-zinc-800 dark:text-zinc-300 dark:ring-zinc-700/60 hover:bg-zinc-200/80 dark:hover:bg-zinc-700/60 transition-colors print:bg-zinc-100 print:text-zinc-700 print:ring-zinc-200 print:hover:bg-zinc-100">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-zinc-100 text-zinc-700 ring-1 ring-inset ring-zinc-200/80 dark:bg-zinc-800 dark:text-zinc-300 dark:ring-zinc-700/60 print:bg-zinc-100 print:text-zinc-700 print:ring-zinc-200">
                 {{ $item }}
             </span>
         @endforeach
