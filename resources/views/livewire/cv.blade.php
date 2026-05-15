@@ -1,10 +1,6 @@
 <?php
 
-use App\Actions\GenerateCvForDownload;
 use App\Settings\About;
-use DanHarrin\LivewireRateLimiting\WithRateLimiting;
-use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
-use Filament\Notifications\Notification;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 use Livewire\Attributes\Computed;
@@ -16,8 +12,6 @@ use App\Settings\GeneralSetting;
 use Illuminate\Support\Facades\Storage;
 
 new #[Layout('components.layouts.simple')] class extends Component {
-    use WithRateLimiting;
-
     #[Computed]
     public function about(): About
     {
@@ -53,30 +47,11 @@ new #[Layout('components.layouts.simple')] class extends Component {
     {
         return app(GeneralSetting::class);
     }
-
-    public function download()
-    {
-        try {
-            $this->rateLimit(maxAttempts: 1, component: 'cv');
-        } catch (TooManyRequestsException $exception) {
-            Notification::make()
-                ->title('Too many requests')
-                ->body("Slow down! Please wait another {$exception->secondsUntilAvailable} seconds to download my CV.")
-                ->warning()
-                ->send();
-
-            return;
-        }
-
-        return response()
-            ->download(GenerateCvForDownload::make()->handle())
-            ->deleteFileAfterSend(true);
-    }
 }; ?>
 
 {{-- Custom Styles & Animations --}}
 <style>
-    .cv-page html, .cv-page body { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; }
 
     @keyframes cv-fade-up {
         from {
@@ -236,6 +211,7 @@ new #[Layout('components.layouts.simple')] class extends Component {
     @endif
 
     {{-- Main Content --}}
+    @php $animOffset = 0; @endphp
     <div class="mt-8 sm:mt-10 print:mt-5 space-y-8 print:space-y-6">
 
         {{-- Work Experience --}}
@@ -251,10 +227,11 @@ new #[Layout('components.layouts.simple')] class extends Component {
                 </div>
                 <div class="space-y-6 print:space-y-4">
                     @foreach ($this->workExperience as $index => $experience)
-                        <div class="cv-item" style="animation-delay: {{ $index * 100 }}ms">
+                        <div class="cv-item" style="animation-delay: {{ ($animOffset + $index) * 100 }}ms">
                             <x-about.work-experience :$experience />
                         </div>
                     @endforeach
+                    @php $animOffset += count($this->workExperience); @endphp
                 </div>
             </section>
         @endif
@@ -272,10 +249,11 @@ new #[Layout('components.layouts.simple')] class extends Component {
                 </div>
                 <div class="space-y-6 print:space-y-4">
                     @foreach ($this->projects as $index => $project)
-                        <div class="cv-item" style="animation-delay: {{ $index * 100 }}ms">
+                        <div class="cv-item" style="animation-delay: {{ ($animOffset + $index) * 100 }}ms">
                             <x-cv.project :$project />
                         </div>
                     @endforeach
+                    @php $animOffset += count($this->projects); @endphp
                 </div>
             </section>
         @endif
@@ -294,10 +272,11 @@ new #[Layout('components.layouts.simple')] class extends Component {
                     </div>
                     <div class="space-y-4 print:space-y-3">
                         @foreach ($this->skills as $index => $skill)
-                            <div class="cv-item" style="animation-delay: {{ $index * 100 }}ms">
+                            <div class="cv-item" style="animation-delay: {{ ($animOffset + $index) * 100 }}ms">
                                 <x-cv.skill :$skill />
                             </div>
                         @endforeach
+                        @php $animOffset += count($this->skills); @endphp
                     </div>
                 </section>
             @endif
@@ -314,10 +293,11 @@ new #[Layout('components.layouts.simple')] class extends Component {
                     </div>
                     <div class="space-y-4 print:space-y-3">
                         @foreach ($this->educations as $index => $education)
-                            <div class="cv-item" style="animation-delay: {{ $index * 100 }}ms">
+                            <div class="cv-item" style="animation-delay: {{ ($animOffset + $index) * 100 }}ms">
                                 <x-cv.education :$education />
                             </div>
                         @endforeach
+                        @php $animOffset += count($this->educations); @endphp
                     </div>
                 </section>
             @endif
